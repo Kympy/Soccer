@@ -30,6 +30,12 @@ public class PlayerMovement : MonoBehaviour
             }
             else if (Input.GetKeyUp(KeyCode.D))
             {
+                Debug.Log(forwardShootPower);
+                if (forwardShootPower < 15f)
+                {
+                    forwardShootPower = 15f;
+                    upwardShootPower = 0f;
+                }
                 PlayerHandler.Instance._animator.SetTrigger("Shoot");
             }
         }
@@ -63,8 +69,9 @@ public class PlayerMovement : MonoBehaviour
             //    mySpeed = moveSpeed;
             //}
         }
-        moveDirection = PlayerHandler.Instance.Horizontal * PlayerHandler.Instance.playerForward.right + 
-            PlayerHandler.Instance.Vertical * PlayerHandler.Instance.playerForward.forward;
+        //moveDirection = PlayerHandler.Instance.Horizontal * PlayerHandler.Instance.playerForward.right + 
+        //    PlayerHandler.Instance.Vertical * PlayerHandler.Instance.playerForward.forward;
+        moveDirection = new Vector3(PlayerHandler.Instance.Horizontal, 0f, PlayerHandler.Instance.Vertical);
         moveDirection.Normalize();
         //finalMovement = PlayerHandler.Instance._rigidbody.position + (mySpeed * Time.deltaTime * moveDirection);
         //PlayerHandler.Instance._rigidbody.MovePosition(finalMovement);
