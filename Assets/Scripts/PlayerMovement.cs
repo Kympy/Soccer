@@ -7,17 +7,20 @@ public class PlayerMovement : MonoBehaviour
 {
     private void FixedUpdate()
     {
-        Character_Movement();
-        Character_Rotation();
-        MovementAnimation();
+
+
     }
     private void Update()
     {
-        Reset_Movement();
+        Character_Movement();
+        Character_Rotation();
+        MovementAnimation();
+        //Reset_Movement();
         if (Input.GetKeyDown(KeyCode.S))
         {
             PlayerHandler.Instance._animator.SetTrigger("Pass");
         }
+        Debug.DrawRay(transform.position + new Vector3(0f, 0.5f, 0f), transform.forward * 10f, Color.cyan);
         if (myBall.activeSelf == false)
         {
             if (Input.GetKey(KeyCode.D))
@@ -43,27 +46,27 @@ public class PlayerMovement : MonoBehaviour
     {
         if (PlayerHandler.Instance.IsMove == false) return;
 
-        mySpeed += Time.deltaTime * accelRate;
+        //mySpeed += Time.deltaTime * accelRate;
         if (Input.GetKey(KeyCode.LeftShift))
         {
             PlayerHandler.Instance._animator.SetBool("IsSprint", true);
-            if (mySpeed > runSpeed)
-            {
-                mySpeed = runSpeed;
-            }
+            //if (mySpeed > runSpeed)
+            //{
+            //    mySpeed = runSpeed;
+            //}
         }
         else
         {
             PlayerHandler.Instance._animator.SetBool("IsSprint", false);
-            if (mySpeed > moveSpeed)
-            {
-                mySpeed = moveSpeed;
-            }
+            //if (mySpeed > moveSpeed)
+            //{
+            //    mySpeed = moveSpeed;
+            //}
         }
         moveDirection = PlayerHandler.Instance.Horizontal * PlayerHandler.Instance.playerForward.right + 
             PlayerHandler.Instance.Vertical * PlayerHandler.Instance.playerForward.forward;
         moveDirection.Normalize();
-        finalMovement = PlayerHandler.Instance._rigidbody.position + (mySpeed * Time.deltaTime * moveDirection);
+        //finalMovement = PlayerHandler.Instance._rigidbody.position + (mySpeed * Time.deltaTime * moveDirection);
         //PlayerHandler.Instance._rigidbody.MovePosition(finalMovement);
     }
     private void Reset_Movement()

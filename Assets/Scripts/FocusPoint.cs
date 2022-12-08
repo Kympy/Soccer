@@ -11,14 +11,11 @@ public class FocusPoint : MonoBehaviour
     {
         transform.rotation = Quaternion.identity;
     }
-    private void FixedUpdate()
-    {
-        transform.position = PlayerHandler.Instance.transform.position + offset;
-        transform.rotation = Quaternion.Euler(new Vector3(-yRotation, xRotation, 0f));
-    }
     private void Update()
     {
         xRotation += PlayerHandler.Instance.MouseX * Time.deltaTime * GameManager.Instance.Mouse_X_Speed;
         yRotation += PlayerHandler.Instance.MouseY * Time.deltaTime * GameManager.Instance.Mouse_Y_Speed;
+        transform.position = PlayerHandler.Instance.transform.position + offset;
+        transform.rotation = Quaternion.Euler(new Vector3(-yRotation, xRotation, 0f));
     }
 }
