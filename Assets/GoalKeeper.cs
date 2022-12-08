@@ -8,7 +8,7 @@ public class GoalKeeper : MonoBehaviour
     [SerializeField] private Transform startPos = null;
     [SerializeField] private GameObject myBall = null;
     private Rigidbody _rigidbody = null;
-    private Animator _animator = null;
+    public Animator _animator = null;
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
@@ -24,8 +24,6 @@ public class GoalKeeper : MonoBehaviour
     }
     private Vector3 direction;
     public float keepSpeed = 5f;
-    private float timer = 0f;
-    public float startDelay = 0.1f;
     public float diveDistance = 1.2f;
     public bool Dive = false;
     public bool Chase = false;
@@ -125,7 +123,6 @@ public class GoalKeeper : MonoBehaviour
         transform.position = startPos.position;
         transform.rotation = startPos.rotation;
         _animator.SetBool("IsMove", false);
-        timer = 0f;
         Dive = false;
     }
     public void Goal()
