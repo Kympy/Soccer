@@ -16,10 +16,6 @@ public class GoalKeeper : MonoBehaviour
     }
     private void Update()
     {
-        //if (Input.GetKeyDown(KeyCode.F2))
-        //{
-        //    Time.timeScale = 1f;
-        //}
         Keep();
     }
     private Vector3 direction;
@@ -46,14 +42,10 @@ public class GoalKeeper : MonoBehaviour
             return;
         }
 
-        //timer += Time.deltaTime;
         direction = myBall.transform.position - (transform.position + rayOffset);
 
         if (Dive == false && Chase == true)
         {
-            //Vector3 lookBall = myBall.transform.position;
-            //lookBall.y = 0f;
-            //transform.LookAt(lookBall);
             Debug.Log("Distance = " + direction.sqrMagnitude);
             if (direction.sqrMagnitude > chaseDistance)
             {
@@ -144,15 +136,15 @@ public class GoalKeeper : MonoBehaviour
     public void LeftUp()
     {
         _rigidbody.AddForce(-transform.right * jumpPower, ForceMode.Impulse);
-        _rigidbody.AddForce(Vector3.up * jumpPower * 0.6f, ForceMode.Impulse);
+        _rigidbody.AddForce(Vector3.up * jumpPower * 0.5f, ForceMode.Impulse);
     }
     public void RightUp()
     {
         _rigidbody.AddForce(transform.right * jumpPower, ForceMode.Impulse);
-        _rigidbody.AddForce(Vector3.up * jumpPower * 0.6f, ForceMode.Impulse);
+        _rigidbody.AddForce(Vector3.up * jumpPower * 0.5f, ForceMode.Impulse);
     }
     public void UpJump()
     {
-        _rigidbody.AddForce(Vector3.up * jumpPower * 0.8f, ForceMode.Impulse);
+        _rigidbody.AddForce(Vector3.up * jumpPower * 0.7f, ForceMode.Impulse);
     }
 }

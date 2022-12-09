@@ -46,7 +46,11 @@ public class PlayerHandler : MonoBehaviour
     public bool IsMove { get; private set; } = false;
     public float MouseX { get; private set; } = 0f;
     public float MouseY { get; private set; } = 0f;
-    public bool SpaceDown { get; private set; } = false;
+
+    public bool isSpin = false;
+    public bool isChip = false;
+    public bool isCharge = false;
+    public bool isShoot = false;
 
     private void Update()
     {
@@ -58,6 +62,24 @@ public class PlayerHandler : MonoBehaviour
         MouseX = Input.GetAxis("Mouse X");
         MouseY = Input.GetAxis("Mouse Y");
 
-        SpaceDown = Input.GetKeyDown(KeyCode.Space);
+        isCharge = Input.GetKey(KeyCode.D);
+        isShoot = Input.GetKeyUp(KeyCode.D);
+
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            isSpin = true;
+        }
+        else if (Input.GetKeyDown(KeyCode.Q))
+        {
+            isChip = true;
+        }
+        if (Input.GetKeyUp(KeyCode.Z))
+        {
+            isSpin = false;
+        }
+        if (Input.GetKeyUp(KeyCode.Q))
+        {
+            isChip = false;
+        }
     }
 }
