@@ -46,14 +46,13 @@ public class GoalKeeper : MonoBehaviour
 
         if (Dive == false && Chase == true)
         {
-            Debug.Log("Distance = " + direction.sqrMagnitude);
             if (direction.sqrMagnitude > chaseDistance)
             {
                 return;
             }
             _rigidbody.MovePosition(_rigidbody.position + transform.forward * Time.deltaTime * keepSpeed);
             _animator.SetBool("IsMove", true);
-            if (direction.sqrMagnitude < diveDistance)
+            if (direction.sqrMagnitude <= diveDistance)
             {
                 Dive = true;
                 Judgement();
@@ -103,6 +102,10 @@ public class GoalKeeper : MonoBehaviour
                 Debug.Log("Down");
                 _animator.SetInteger("Dive", 4);
             }
+        }
+        else
+        {
+            _animator.SetBool("IsMove", false);
         }
     }
     public void Reset()

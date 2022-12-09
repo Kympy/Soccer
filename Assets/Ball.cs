@@ -27,24 +27,25 @@ public class Ball : MonoBehaviour
         timer += Time.deltaTime;
         if (timer > 1f)
         {
+            isSpin = false;
             return;
         }
         if (isLeft == false)
         {
-            rigid.AddForce(spinVec.right * Time.deltaTime * 500f, ForceMode.Acceleration);
+            rigid.AddForce(510f * Time.deltaTime * spinVec.right, ForceMode.Acceleration);
 
         }
         else
         {
-            rigid.AddForce(-spinVec.right * Time.deltaTime * 500f, ForceMode.Acceleration);
+            rigid.AddForce(510f * Time.deltaTime * -spinVec.right, ForceMode.Acceleration);
         }
     }
     private void Hide()
     {
+        isSpin = false;
         this.gameObject.SetActive(false);
         timer = 0f;
         goalKeeper.KeeperReset();
-        isSpin = false;
     }
     private void OnTriggerEnter(Collider other)
     {

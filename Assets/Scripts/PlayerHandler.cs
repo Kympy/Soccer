@@ -49,6 +49,7 @@ public class PlayerHandler : MonoBehaviour
 
     public bool isSpin = false;
     public bool isChip = false;
+    public bool isPrepare = false;
     public bool isCharge = false;
     public bool isShoot = false;
 
@@ -62,6 +63,7 @@ public class PlayerHandler : MonoBehaviour
         MouseX = Input.GetAxis("Mouse X");
         MouseY = Input.GetAxis("Mouse Y");
 
+        isPrepare = Input.GetKeyDown(KeyCode.D);
         isCharge = Input.GetKey(KeyCode.D);
         isShoot = Input.GetKeyUp(KeyCode.D);
 
@@ -72,14 +74,6 @@ public class PlayerHandler : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Q))
         {
             isChip = true;
-        }
-        if (Input.GetKeyUp(KeyCode.Z))
-        {
-            isSpin = false;
-        }
-        if (Input.GetKeyUp(KeyCode.Q))
-        {
-            isChip = false;
         }
     }
 }

@@ -8,55 +8,23 @@ public class PlayerMovement : MonoBehaviour
     private float MinShootPower = 25f;
     private float MaxShootPower = 50f;
     private Vector3 shootVector;
+    [SerializeField] private GameObject arrow;
     private void Update()
     {
+        Charge();
         Character_Movement();
         MovementAnimation();
-
-        Debug.DrawRay(transform.position + new Vector3(0f, 0.5f, 0f), transform.forward * 10f, Color.cyan);
-        if (myBall.activeSelf == false)
-        {
-            if (PlayerHandler.Instance.isCharge)
-            {
-                //shootVector = new Vector3(PlayerHandler.Instance.Horizontal, 0f, PlayerHandler.Instance.Vertical);
-                shootVector = transform.right * Input.GetAxis("Horizontal") + transform.forward * Input.GetAxis("Vertical");
-                shootVector.Normalize();
-                forwardShootPower += Time.deltaTime * Random.Range(20f, 30f);
-                upwardShootPower += Time.deltaTime * Random.Range(4f, 10f);
-                UIManager.Instance.UpdateBar(forwardShootPower, MaxShootPower);
-            }
-            else if (PlayerHandler.Instance.isShoot)
-            {
-                if (forwardShootPower < MinShootPower)
-                {
-                    forwardShootPower = MinShootPower;
-                }
-                else if(forwardShootPower > MaxShootPower)
-                {
-                    forwardShootPower = MaxShootPower;
-                }
-                if(upwardShootPower > MaxShootPower * 0.5f)
-                {
-                    upwardShootPower = MaxShootPower * 0.5f;
-                }
-                PlayerHandler.Instance._animator.SetTrigger("Shoot");
-            }
-        }
         Character_Rotation();
     }
     private Vector3 moveDirection;
-    private Vector3 finalMovement;
     [Header("Movement")]
-    [SerializeField] private float moveSpeed;
-    [SerializeField] private float runSpeed;
-    private float mySpeed = 0f;
-    [SerializeField] private float accelRate = 10f;
     [SerializeField] private float rotateSpeed;
-    public bool isShooting = false;
+    private bool isShooting = false;
     private void Character_Movement()
     {
         if (PlayerHandler.Instance.IsMove == false) return;
-
+        moveDirection = new Vector3(PlayerHandler.Instance.Horizontal, 0f, PlayerHandler.Instance.Vertical);
+        moveDirection.Normalize();
         if (Input.GetKey(KeyCode.E))
         {
             PlayerHandler.Instance._animator.SetBool("IsSprint", true);
@@ -65,8 +33,6 @@ public class PlayerMovement : MonoBehaviour
         {
             PlayerHandler.Instance._animator.SetBool("IsSprint", false);
         }
-        moveDirection = new Vector3(PlayerHandler.Instance.Horizontal, 0f, PlayerHandler.Instance.Vertical);
-        moveDirection.Normalize();
     }
     private void Character_Rotation()
     {
@@ -74,7 +40,7 @@ public class PlayerMovement : MonoBehaviour
         if (isShooting) return;
         if (PlayerHandler.Instance.isCharge || PlayerHandler.Instance.isShoot)
         {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveDirection), Time.deltaTime * rotateSpeed * 0.1f);
+            return;
         }
         else
         {
@@ -85,14 +51,118 @@ public class PlayerMovement : MonoBehaviour
     {
         PlayerHandler.Instance._animator.SetBool("IsMove", PlayerHandler.Instance.IsMove);
     }
+    [SerializeField] private Transform leftUp;
+    [SerializeField] private Transform rightUp;
+    [SerializeField] private Transform leftDown;
+    [SerializeField] private Transform rightDown;
+    [SerializeField] private Transform middle;
+    private void Charge()
+    {
+        Debug.DrawRay(transform.position + new Vector3(0f, 0.5f, 0f), transform.forward * 10f, Color.cyan);
+        if (myBall.activeSelf == false)
+        {
+            if (PlayerHandler.Instance.isPrepare)
+            {
+                shootVector = middle.position - transform.position;
+            }
+            if (PlayerHandler.Instance.isCharge)
+            {
+                Vector3 direction;
+                //shootVector = Vector3.Lerp(shootVector, new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical")), Time.deltaTime * 4f);
+                // Right
+                if (PlayerHandler.Instance.Horizontal > 0f)
+                {
+                    // Right Up
+                    if (PlayerHandler.Instance.Vertical > 0f)
+                    {
+                        direction = rightUp.position - transform.position;
+                    }
+                    // RightDown
+                    else if (PlayerHandler.Instance.Vertical == 0f)
+                    {
+                        direction = rightDown.position - transform.position;
+                    }
+                    // Back
+                    else
+                    {
+                        direction = -transform.forward;
+                    }
+                }
+                // Left
+                else if (PlayerHandler.Instance.Horizontal < 0f)
+                {
+                    // LeftUp
+                    if (PlayerHandler.Instance.Vertical > 0f)
+                    {
+                        direction = leftUp.position - transform.position;
+                    }
+                    // LeftDown
+                    else if (PlayerHandler.Instance.Vertical == 0f)
+                    {
+                        direction = leftDown.position - transform.position;
+                    }
+                    else
+                    {
+                        direction = -transform.forward + -transform.right;
+                    }
+                }
+                else
+                {
+                    direction = middle.position - transform.position;
+                }
+                shootVector = Vector3.Lerp(shootVector, direction, Time.deltaTime);
+                shootVector.Normalize();
+                Debug.DrawRay(transform.position, shootVector * 100f, Color.yellow);
+                forwardShootPower += Time.deltaTime * Random.Range(20f, 30f);
+                upwardShootPower += Time.deltaTime * Random.Range(4f, 10f);
+                UIManager.Instance.UpdateBar(forwardShootPower, MaxShootPower);
+            }
+            if (PlayerHandler.Instance.isShoot)
+            {
+                if (forwardShootPower < MinShootPower)
+                {
+                    forwardShootPower = MinShootPower;
+                }
+                else if (forwardShootPower > MaxShootPower)
+                {
+                    forwardShootPower = MaxShootPower;
+                }
+                if (upwardShootPower > MaxShootPower * 0.5f)
+                {
+                    upwardShootPower = MaxShootPower * 0.5f;
+                }
+                PlayerHandler.Instance._animator.SetTrigger("Shoot");
+            }
+        }
+    }
+    private Vector3 tempMinus;
+    private float tempDelta;
+    private IEnumerator TurnDirectly()
+    {
+        Vector3 minus = shootVector - transform.forward;
+        float degree = Mathf.Atan2(minus.y, minus.x) * Mathf.Rad2Deg;
+        float sum = 0f;
+        tempDelta = 0f;
+        while (sum < degree)
+        {
+            tempMinus = shootVector - transform.forward;
+            tempDelta = Mathf.Atan2(tempMinus.y, tempMinus.x) * Mathf.Rad2Deg;
+            sum += tempDelta;
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(shootVector), Time.deltaTime * rotateSpeed * 4f);
+            yield return null;
+        }
+        Debug.Log("Clear");
+    }
     public GameObject myBall;
     public Transform foot;
-    public float forwardShootPower = 0f;
-    public float upwardShootPower = 0f;
+    private float forwardShootPower = 0f;
+    private float upwardShootPower = 0f;
     public void Shoot()
     {
         myBall.SetActive(true);
-        myBall.transform.position = foot.transform.position;
+        myBall.transform.position = foot.transform.position + Vector3.up * 0.2f;
+        myBall.transform.rotation = Quaternion.identity;
+        StartCoroutine(TurnDirectly());
         if (PlayerHandler.Instance.isSpin)
         {
             Spin();
@@ -103,8 +173,10 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            myBall.GetComponent<Rigidbody>().AddForce((shootVector * forwardShootPower + transform.up * upwardShootPower), ForceMode.Impulse);
+            myBall.GetComponent<Rigidbody>().AddForce(shootVector * forwardShootPower + transform.up * upwardShootPower, ForceMode.Impulse);
         }
+        PlayerHandler.Instance.isSpin = false;
+        PlayerHandler.Instance.isChip = false;
         forwardShootPower = 0f;
         upwardShootPower = 0f;
         UIManager.Instance.UpdateBar(forwardShootPower, MaxShootPower);
@@ -113,7 +185,9 @@ public class PlayerMovement : MonoBehaviour
     public void Spin()
     {
         Debug.LogWarning("Spin!");
-        if (shootVector.x > 0)
+        //Debug.Log(Vector3.Cross(transform.forward, shootVector).y);
+        // Right
+        if (Vector3.Cross(transform.forward, shootVector).y > 0)
         {
             myBall.GetComponent<Ball>().isLeft = false;
         }
@@ -121,7 +195,7 @@ public class PlayerMovement : MonoBehaviour
         {
             myBall.GetComponent<Ball>().isLeft = true;
         }
-        myBall.GetComponent<Rigidbody>().AddForce((shootVector * forwardShootPower * 0.9f + transform.up * upwardShootPower), ForceMode.Impulse);
+        myBall.GetComponent<Rigidbody>().AddForce(0.9f * forwardShootPower * shootVector + transform.up * upwardShootPower, ForceMode.Impulse);
         myBall.GetComponent<Ball>().isSpin = true;
     }
     public void Chip()
@@ -129,7 +203,7 @@ public class PlayerMovement : MonoBehaviour
         Debug.LogWarning("Chip!");
         forwardShootPower = 11f;
         upwardShootPower = 10f;
-        myBall.GetComponent<Rigidbody>().AddForce((shootVector * forwardShootPower * 0.5f + transform.up * upwardShootPower), ForceMode.Impulse);
+        myBall.GetComponent<Rigidbody>().AddForce(0.5f * forwardShootPower * shootVector + transform.up * upwardShootPower, ForceMode.Impulse);
     }
     public void LockRotation()
     {
