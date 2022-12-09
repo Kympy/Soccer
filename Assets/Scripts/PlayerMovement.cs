@@ -187,7 +187,7 @@ public class PlayerMovement : MonoBehaviour
         Debug.LogWarning("Spin!");
         //Debug.Log(Vector3.Cross(transform.forward, shootVector).y);
         // Right
-        if (Vector3.Cross(transform.forward, shootVector).y > 0)
+        if (Vector3.Cross(-middle.forward, shootVector).y > 0)
         {
             myBall.GetComponent<Ball>().isLeft = false;
         }

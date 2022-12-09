@@ -25,19 +25,22 @@ public class Ball : MonoBehaviour
     {
         if (isSpin == false) return;
         timer += Time.deltaTime;
-        if (timer > 1f)
+        if (timer > 1.4f)
         {
             isSpin = false;
             return;
         }
-        if (isLeft == false)
+        if(timer >= 0.4f)
         {
-            rigid.AddForce(510f * Time.deltaTime * spinVec.right, ForceMode.Acceleration);
+            if (isLeft == false)
+            {
+                rigid.AddForce(510f * Time.deltaTime * spinVec.right, ForceMode.Acceleration);
 
-        }
-        else
-        {
-            rigid.AddForce(510f * Time.deltaTime * -spinVec.right, ForceMode.Acceleration);
+            }
+            else
+            {
+                rigid.AddForce(510f * Time.deltaTime * -spinVec.right, ForceMode.Acceleration);
+            }
         }
     }
     private void Hide()
