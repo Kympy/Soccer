@@ -217,4 +217,8 @@ public class PlayerMovement : MonoBehaviour
     {
         isShooting = true;
     }
+    public void UnLockRotation()
+    {
+        isShooting = false;
+    }
 }
