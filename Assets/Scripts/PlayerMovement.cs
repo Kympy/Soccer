@@ -56,6 +56,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform leftDown;
     [SerializeField] private Transform rightDown;
     [SerializeField] private Transform middle;
+    [SerializeField] private Transform leftMiddle;
+    [SerializeField] private Transform rightMiddle;
     private void Charge()
     {
         Debug.DrawRay(transform.position + new Vector3(0f, 0.5f, 0f), transform.forward * 10f, Color.cyan);
@@ -68,6 +70,7 @@ public class PlayerMovement : MonoBehaviour
             if (PlayerHandler.Instance.isCharge)
             {
                 Vector3 direction;
+                forwardShootPower += Time.deltaTime * Random.Range(20f, 30f);
                 //shootVector = Vector3.Lerp(shootVector, new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical")), Time.deltaTime * 4f);
                 // Right
                 if (PlayerHandler.Instance.Horizontal > 0f)
@@ -76,16 +79,19 @@ public class PlayerMovement : MonoBehaviour
                     if (PlayerHandler.Instance.Vertical > 0f)
                     {
                         direction = rightUp.position - transform.position;
+                        upwardShootPower += Time.deltaTime * Random.Range(2f, 8f);
                     }
-                    // RightDown
+                    // RightMiddle
                     else if (PlayerHandler.Instance.Vertical == 0f)
                     {
-                        direction = rightDown.position - transform.position;
+                        direction = rightMiddle.position - transform.position;
+                        upwardShootPower += Time.deltaTime * Random.Range(1f, 3f);
                     }
-                    // Back
+                    // RightDown
                     else
                     {
-                        direction = -transform.forward;
+                        direction = rightDown.position - transform.position;
+                        upwardShootPower = 0f;
                     }
                 }
                 // Left
@@ -95,26 +101,28 @@ public class PlayerMovement : MonoBehaviour
                     if (PlayerHandler.Instance.Vertical > 0f)
                     {
                         direction = leftUp.position - transform.position;
+                        upwardShootPower += Time.deltaTime * Random.Range(2f, 8f);
                     }
-                    // LeftDown
+                    // LeftMiddle
                     else if (PlayerHandler.Instance.Vertical == 0f)
                     {
-                        direction = leftDown.position - transform.position;
+                        direction = leftMiddle.position - transform.position;
+                        upwardShootPower += Time.deltaTime * Random.Range(1f, 3f);
                     }
                     else
                     {
-                        direction = -transform.forward + -transform.right;
+                        direction = leftDown.position - transform.position;
+                        upwardShootPower = 0f;
                     }
                 }
                 else
                 {
                     direction = middle.position - transform.position;
+                    upwardShootPower += Time.deltaTime * Random.Range(1f, 3f);
                 }
                 shootVector = Vector3.Lerp(shootVector, direction, Time.deltaTime);
                 shootVector.Normalize();
                 Debug.DrawRay(transform.position, shootVector * 100f, Color.yellow);
-                forwardShootPower += Time.deltaTime * Random.Range(20f, 30f);
-                upwardShootPower += Time.deltaTime * Random.Range(4f, 10f);
                 UIManager.Instance.UpdateBar(forwardShootPower, MaxShootPower);
             }
             if (PlayerHandler.Instance.isShoot)
