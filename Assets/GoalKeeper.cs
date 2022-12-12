@@ -35,15 +35,17 @@ public class GoalKeeper : MonoBehaviour
 
         Debug.DrawRay(transform.position + rayOffset, transform.right * 2f, Color.red);
         Debug.DrawRay(transform.position + rayOffset, -transform.right * 2f, Color.red);
+        // If ball isn't exist.
         if (myBall.activeSelf == false)
         {
             Debug.DrawRay(transform.position + rayOffset, transform.forward * 10f, Color.red);
+            // Look player
             transform.LookAt(player.transform);
             return;
         }
-
+        // If ball is active, calculate ball to keeper direction vector.
         direction = myBall.transform.position - (transform.position + rayOffset);
-
+        // Normal state
         if (Dive == false && Chase == true)
         {
             if (direction.sqrMagnitude > chaseDistance)
@@ -52,9 +54,11 @@ public class GoalKeeper : MonoBehaviour
             }
             _rigidbody.MovePosition(_rigidbody.position + transform.forward * Time.deltaTime * keepSpeed);
             _animator.SetBool("IsMove", true);
+            // If diving distance is enough.
             if (direction.sqrMagnitude <= diveDistance)
             {
                 Dive = true;
+                // Judge where to dive.
                 Judgement();
             }
         }
@@ -66,9 +70,10 @@ public class GoalKeeper : MonoBehaviour
         Vector3 ballToMe = myBall.transform.position - (transform.position + rayOffset);
         Debug.DrawLine(transform.position + rayOffset, myBall.transform.position, Color.yellow, 5f);
         Debug.Log("Cross Y : " + Vector3.Cross(transform.forward, ballToMe).y);
-        //Time.timeScale = 0f;
+        // Ball is higher than keeper height
         if (ballToMe.y > rayOffset.y)
         {
+            // Cross keeper's forward vector and ball direction vector.
             if (Vector3.Cross(transform.forward, ballToMe).y > 0.35f)
             {
                 Debug.Log("UpRight");
@@ -85,6 +90,7 @@ public class GoalKeeper : MonoBehaviour
                 _animator.SetInteger("Dive", 1);
             }
         }
+        // Ball height is lower than keeper's height.
         else if (ballToMe.y <= rayOffset.y)
         {
             if (Vector3.Cross(transform.forward, ballToMe).y > 0.35f) // right
